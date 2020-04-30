@@ -18,6 +18,8 @@
 package org.apache.flink.streaming.siddhi;
 
 import org.apache.flink.annotation.PublicEvolving;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.streaming.siddhi.exception.DuplicatedStreamException;
 import org.apache.flink.streaming.siddhi.exception.UndefinedStreamException;
 import org.apache.flink.streaming.siddhi.schema.SiddhiStreamSchema;
@@ -178,9 +180,17 @@ public class SiddhiCEP {
         if (isStreamDefined(streamId)) {
             throw new DuplicatedStreamException("Input stream: " + streamId + " already exists");
         }
+        /**
+         * dataStreams[streamId,Stream]
+         * dataStreamSchemas[streamId,schema]
+         * 这两个正好形成流和流的schema关系https://blog.csdn.net/ncuzengxiebo/article/details/83820821
+         */
         dataStreams.put(streamId, dataStream);
-        SiddhiStreamSchema<T> schema = new SiddhiStreamSchema<>(dataStream.getType(), fieldNames);
-        schema.setTypeSerializer(schema.getTypeInfo().createSerializer(dataStream.getExecutionConfig()));
+        TypeInformation<T> type = dataStream.getType();
+        SiddhiStreamSchema<T> schema = new SiddhiStreamSchema<>(type, fieldNames);
+        TypeInformation<T> typeInfo = schema.getTypeInfo();
+        TypeSerializer<T> seria = typeInfo.createSerializer(dataStream.getExecutionConfig());
+        schema.setTypeSerializer(seria);
         dataStreamSchemas.put(streamId, schema);
     }
 
