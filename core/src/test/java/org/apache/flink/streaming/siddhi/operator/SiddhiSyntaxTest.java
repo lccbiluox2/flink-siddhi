@@ -60,6 +60,7 @@ public class SiddhiSyntaxTest {
             Assert.fail("Should throw exception for getting input handler for unknown streamId.");
         } catch (Exception ex) {
             // Expected exception for getting input handler for illegal streamId.
+//            ex.printStackTrace();
         }
 
         runtime.addCallback("outStream", new StreamCallback() {

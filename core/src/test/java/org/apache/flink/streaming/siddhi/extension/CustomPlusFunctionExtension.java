@@ -26,6 +26,9 @@ import io.siddhi.core.util.snapshot.state.State;
 import io.siddhi.core.util.snapshot.state.StateFactory;
 import io.siddhi.query.api.definition.Attribute;
 
+/**
+ * 自定义表达式
+ */
 public class CustomPlusFunctionExtension extends FunctionExecutor {
     private Attribute.Type returnType;
 
